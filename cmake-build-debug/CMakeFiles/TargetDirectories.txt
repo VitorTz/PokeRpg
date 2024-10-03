@@ -1,3 +1,0 @@
-/home/vitor/git/PokeRpg/cmake-build-debug/CMakeFiles/PokeRpg.dir
-/home/vitor/git/PokeRpg/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/vitor/git/PokeRpg/cmake-build-debug/CMakeFiles/rebuild_cache.dir
