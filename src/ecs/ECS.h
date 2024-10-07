@@ -29,6 +29,8 @@ namespace pk {
         pk::entity_t createEntity(pk::zindex_t zindex, bool submitToCamera);
         pk::entity_t createSprite(pk::zindex_t zindex, const char* fileName);
 
+        bool checkCollision(const Rectangle& rect);
+
         void destroyEntity(pk::entity_t e);
         void clear();
 
@@ -56,19 +58,25 @@ namespace pk {
         const pk::Camera* getCamera() const;
 
     private:
+        const pk::TiledMapId mapId;
         std::unique_ptr<pk::EntityManager> entity{};
         std::unique_ptr<pk::ComponentManager> component{};
         std::unique_ptr<pk::SystemManager> system{};
         std::queue<pk::entity_t> entitiesToDestroy{};
         std::unique_ptr<pk::Camera> camera{};
-        std::unordered_set<std::pair<pk::entity_t, Rectangle>, pk::ent_pair_hash> staticCollisions{};
+        std::vector<Rectangle> staticCollisions{};
         pk::player_info_t playerInfo{};
         bool shouldDestroyAllEntities{};
 
-        explicit ECS(const pk::TiledMapId mapId) : entity(std::make_unique<pk::EntityManager>()),
-                component(std::make_unique<pk::ComponentManager>()),
-                system(std::make_unique<pk::SystemManager>(mapId)),
-                camera(std::make_unique<pk::Camera>(mapId)) { }
+        explicit ECS(
+            const pk::TiledMapId mapId
+        ) : mapId(mapId),
+            entity(std::make_unique<pk::EntityManager>()),
+            component(std::make_unique<pk::ComponentManager>()),
+            system(std::make_unique<pk::SystemManager>(mapId)),
+            camera(std::make_unique<pk::Camera>(mapId)) {
+            this->staticCollisions.reserve(1024);
+        }
 
     };
 

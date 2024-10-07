@@ -73,6 +73,17 @@ pk::entity_t pk::ECS::createSprite(const pk::zindex_t zindex, const char *fileNa
 }
 
 
+bool pk::ECS::checkCollision(const Rectangle &rect) {
+    return std::any_of(
+        this->staticCollisions.begin(),
+        this->staticCollisions.end(),
+        [rect](const Rectangle& other) {
+            return CheckCollisionRecs(rect, other);
+        }
+    );
+}
+
+
 void pk::ECS::destroyEntity(const pk::entity_t e) {
     this->entitiesToDestroy.push(e);
 }

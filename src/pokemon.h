@@ -55,10 +55,22 @@ namespace pk {
         Hospital,
         Arena
     };
+    enum CollisionType {
+        EntityCollision,
+        WorldObjectCollision
+    };
 
-    struct ent_pair_hash {
-        std::size_t operator()(const std::pair<pk::entity_t, Rectangle>& p) const {
+    template<typename T>
+    struct entity_pair_hash {
+         std::size_t operator()(const std::pair<pk::entity_t, T>& p) const {
             return p.first;
+        }
+    };
+
+    template<typename T>
+    struct entity_pair_equal_to {
+        bool operator()(const std::pair<pk::entity_t, T>& lhs, const std::pair<pk::entity_t, T>& rhs) const {
+            return lhs.first == rhs.first;
         }
     };
 
