@@ -1,8 +1,6 @@
-//
-// Created by vitor on 10/3/24.
-//
-#include "TexturePool.h"
-#include "util.h"
+#include "TexturePool.hpp"
+#include "util.hpp"
+
 
 
 pk::TexturePool::TexturePool() {
@@ -10,8 +8,8 @@ pk::TexturePool::TexturePool() {
 }
 
 
-Texture2D pk::TexturePool::get(const char *fileName) {
-    const unsigned long h = pk::hash(fileName);
+Texture2D pk::TexturePool::get(const char* fileName) {
+    const std::size_t h = pk::hash(fileName);
     if (this->texturePool.find(h) == this->texturePool.end()) {
         this->texturePool.emplace(h, LoadTexture(fileName));
     }
@@ -19,16 +17,16 @@ Texture2D pk::TexturePool::get(const char *fileName) {
 }
 
 
-void pk::TexturePool::erase(const char *fileName) {
-    const unsigned long h = pk::hash(fileName);
+void pk::TexturePool::erase(const char* fileName) {
+    const std::size_t h = pk::hash(fileName);
     if (this->texturePool.find(h) != this->texturePool.end()) {
         UnloadTexture(this->texturePool[h]);
-    }
-    this->texturePool.erase(h);
+        this->texturePool.erase(h);
+    }    
 }
 
 
-void pk::TexturePool::clear() {
+void pk::TexturePool::unloadAllTextures() {
     for (auto& pair : this->texturePool) {
         UnloadTexture(pair.second);
     }
@@ -39,5 +37,3 @@ void pk::TexturePool::clear() {
 std::size_t pk::TexturePool::size() const {
     return this->texturePool.size();
 }
-
-

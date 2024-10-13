@@ -1,7 +1,4 @@
-//
-// Created by vitor on 10/3/24.
-//
-#include "Scene.h"
+#include "Scene.hpp"
 
 
 void pk::SceneManager::init() {
@@ -11,15 +8,21 @@ void pk::SceneManager::init() {
 
 
 void pk::SceneManager::loadNextScene() {
-    switch (this->nextScene) {
-        case pk::LevelSceneId:
+    switch (this->sceneId) {
+        case pk::SceneId::TestScene1Id:
+            this->scene = std::make_unique<pk::TestScene1>();
+            break;
+        case pk::SceneId::TestScene2Id:
+            this->scene = std::make_unique<pk::TestScene2>();
+            break;
+        case pk::SceneId::LevelSceneId:
             this->scene = std::make_unique<pk::LevelScene>();
             break;
-        case pk::TitleScreenId:
+        case pk::SceneId::TitleScreenId:
             this->scene = std::make_unique<pk::TitleScreen>();
             break;
-        case pk::TestScene1Id:
-            this->scene = std::make_unique<pk::TestScene1>();
+        case pk::SceneId::LoadingScreenId:
+            this->scene = std::make_unique<pk::LoadingScreen>();
             break;
         default:
             break;
@@ -28,8 +31,8 @@ void pk::SceneManager::loadNextScene() {
 
 
 void pk::SceneManager::changeScene(const pk::SceneId sceneId) {
+    this->sceneId = sceneId;
     this->shouldChangeScene = true;
-    this->nextScene = sceneId;
 }
 
 
@@ -45,4 +48,3 @@ void pk::SceneManager::update(const float dt) {
 void pk::SceneManager::draw() {
     this->scene->draw();
 }
-

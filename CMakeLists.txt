@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.20)
 project(PokeRpg)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -23,30 +23,17 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     endif()
 endif()
 
-add_executable(PokeRpg src/main.cpp
-        src/pokemon.h
-        src/scene/Scene.h
-        src/scene/SceneManager.cpp
-        src/scene/TitleScreen.cpp
-        src/scene/LoadingScreen.cpp
-        src/scene/LevelScene.cpp
-        src/scene/TestScene1.cpp
-        src/util/TexturePool.h
-        src/util/util.h
-        src/util/util.cpp
-        src/util/TexturePool.cpp
-        src/ecs/components.h
-        src/ecs/Component.h
-        src/ecs/Entity.h
-        src/ecs/Entity.cpp
-        src/ecs/System.h
-        src/ecs/ECS.h
-        src/ecs/ECS.cpp
-        src/util/Camera.h
-        src/util/Camera.cpp
+
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.h*")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+add_executable (${PROJECT_NAME} ${headers} ${sources}
         src/ecs/TransformSystem.cpp
         src/ecs/SpriteSystem.cpp
-        src/ecs/SpriteAnimationSystem.cpp)
+        src/ecs/SpriteAnimationSystem.cpp
+        src/util/OrderedEntityVector.h
+        src/util/OrderedEntityVector.cpp
+        src/scene/TestScene2.cpp
+        src/util/mrandom.h)
 
 
 if ("${PLATFORM}" STREQUAL "Web")

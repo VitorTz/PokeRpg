@@ -1,14 +1,11 @@
-#include "scene/Scene.h"
+#include "scene/Scene.hpp"
+#include "util/TexturePool.hpp"
 
 
 int main() {
     InitWindow(pk::SCREEN_W, pk::SCREEN_H, pk::WINDOW_TITLE);
     SetTargetFPS(pk::FPS);
-
-    pk::registerComponent<pk::transform_t>();
-    pk::registerComponent<pk::sprite_t>();
-    pk::registerComponent<pk::sprite_animation_t>();
-
+    
     pk::gSceneManager.init();
 
     while (WindowShouldClose() == false) {
@@ -19,7 +16,7 @@ int main() {
         EndDrawing();
     }
 
-    pk::gTexturePool.clear();
+    pk::gTexturePool.unloadAllTextures();
     CloseWindow();
     return 0;
 }

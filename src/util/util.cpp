@@ -1,14 +1,18 @@
-//
-// Created by vitor on 10/3/24.
-//
-#include "util.h"
+#include "util.hpp"
 
 
-unsigned long pk::hash(const char *s) {
+std::size_t pk::hash(const char *s) {
     unsigned long hash = 5381;
     int c;
     while ((c = *s++))
-        hash = ((hash << 5) + hash) + c;
+        hash = ((hash << 5) + hash) + c; // hash * 33 + c
     return hash;
 }
 
+
+void pk::loadMap(const pk::MapId mapId) {
+    std::ifstream file(pk::MAP_PATHS[mapId]);
+    assert(file.is_open());
+    
+    file.close();
+}
