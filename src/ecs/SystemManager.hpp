@@ -21,7 +21,7 @@ namespace pk {
 
     };
 
-    class TransformSystem : public pk::System {
+    class TransformSystem final : public pk::System {
 
         public:
             void update(float dt) override;
@@ -30,7 +30,7 @@ namespace pk {
     };
 
 
-    class SpriteSystem : public pk::System {
+    class SpriteSystem final : public pk::System {
 
         public:
             void update(float dt) override;
@@ -38,7 +38,7 @@ namespace pk {
 
     };
 
-    class SpriteAnimationSystem : public pk::System {
+    class SpriteAnimationSystem final : public pk::System {
 
         public:
             void update(float dt) override;
@@ -49,55 +49,61 @@ namespace pk {
     class SystemManager {
 
         private:
-            std::unordered_map<pk::component_t, std::unique_ptr<pk::System>> systemMap{};
-            std::unordered_map<pk::entity_t, std::unordered_set<pk::component_t>> entityToDrawableComponents{};
-            std::unordered_set<pk::component_t> drawableComponents{};
-            std::vector<pk::component_t> systemOrder{};
+            std::unordered_map<pk::component_id_t, std::unique_ptr<pk::System>> systemMap{};
+            std::unordered_map<pk::entity_t, std::unordered_set<pk::component_id_t>> entityToDrawableComponents{};
+            std::unordered_set<pk::component_id_t> drawableComponents{};  // Set of drawable component ids
+            std::vector<pk::component_id_t> systemOrder{};  // Order in which each System should be updated
 
         public:
             SystemManager() {
+                // System Instance for each Component
                 this->systemMap.reserve(pk::NUM_COMPONENTS);
                 this->systemMap.emplace(pk::id::transform, std::make_unique<pk::TransformSystem>());
                 this->systemMap.emplace(pk::id::sprite, std::make_unique<pk::SpriteSystem>());
                 this->systemMap.emplace(pk::id::sprite_animation, std::make_unique<pk::SpriteAnimationSystem>());
                 assert(this->systemMap.size() == pk::NUM_COMPONENTS);
-                
+
+
+                // Drawable Components
+                this->entityToDrawableComponents.reserve(pk::MAX_ENTITIES);
                 for (pk::entity_t e = 0; e < pk::MAX_ENTITIES; e++) {
-                    this->entityToDrawableComponents[e].reserve(pk::NUM_COMPONENTS);
+                    this->entityToDrawableComponents[e].reserve(pk::NUM_DRAWABLE_COMPONENTS);
                 }
+                this->drawableComponents.reserve(pk::NUM_DRAWABLE_COMPONENTS);
+                for (const pk::component_id_t id : ID_OF_DRAWABLE_COMPONENTS) {
+                    this->drawableComponents.emplace(id);
+                }
+                assert(this->drawableComponents.size() == pk::NUM_DRAWABLE_COMPONENTS);
 
-                this->drawableComponents.reserve(pk::NUM_COMPONENTS);
-                this->drawableComponents.insert(pk::id::sprite);
-                this->drawableComponents.insert(pk::id::sprite_animation);
-
+                // Order in which each System should be updated (not all system have to be updated)
                 this->systemOrder.reserve(pk::NUM_COMPONENTS);
                 this->systemOrder.emplace_back(pk::id::sprite_animation);
             }
 
-            template<pk::component_t id>
+            template<pk::component_id_t id>
             void insert(const pk::entity_t e) {
                 this->systemMap[id]->entities.insert(e);
                 if (this->drawableComponents.find(id) != this->drawableComponents.end()) {
-                    this->entityToDrawableComponents[e].insert(id);
+                    this->entityToDrawableComponents[e].emplace(id);
                 }                
             }
 
-            template<pk::component_t id>
+            template<pk::component_id_t id>
             void erase(const pk::entity_t e) {
                 this->systemMap[id]->entities.erase(e);
                 this->entityToDrawableComponents[e].erase(e);                
             }
 
             void update(const float dt) {
-                for (const pk::component_t id : this->systemOrder) {
+                for (const pk::component_id_t id : this->systemOrder) {
                     this->systemMap[id]->update(dt);
                 }
             }
 
             void draw(const std::vector<std::pair<float, pk::entity_t>>& entities) {
-                for (const std::pair<float, pk::entity_t>& pair : entities) {
-                    for (const pk::component_t id : this->entityToDrawableComponents[pair.second]) {
-                        this->systemMap[id]->draw(pair.second);
+                for (const auto&[yPos, entity] : entities) {
+                    for (const pk::component_id_t id : this->entityToDrawableComponents[entity]) {
+                        this->systemMap[id]->draw(entity);
                     }
                 }
             }
@@ -118,7 +124,7 @@ namespace pk {
                 }
             }
 
-            template<pk::component_t id>
+            template<pk::component_id_t id>
             const std::unordered_set<pk::entity_t>& getEntitiesFromSystem() const {
                 return this->systemMap.at(id)->entities;
             }

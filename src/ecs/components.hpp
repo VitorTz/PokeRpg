@@ -7,13 +7,19 @@ namespace pk {
 
     namespace id {
 
-        constexpr pk::component_t transform{0};
-        constexpr pk::component_t sprite{1};
-        constexpr pk::component_t sprite_animation{2};
+        constexpr pk::component_id_t transform{0};
+        constexpr pk::component_id_t sprite{1};
+        constexpr pk::component_id_t sprite_animation{2};
     
     }
 
     constexpr std::size_t NUM_COMPONENTS{3};
+    constexpr std::size_t NUM_DRAWABLE_COMPONENTS{2};
+    constexpr std::array<pk::component_id_t, pk::NUM_DRAWABLE_COMPONENTS> ID_OF_DRAWABLE_COMPONENTS = {
+        pk::id::sprite,
+        pk::id::sprite_animation
+    };
+
 
     typedef struct transform {
         Vector2 pos{};
@@ -26,7 +32,7 @@ namespace pk {
     typedef struct sprite {
         Texture2D texture{};
         sprite() = default;
-        explicit sprite(const char* fileName) : texture(pk::gTexturePool.get(fileName)) { }
+        explicit sprite(const char* fileName) : texture(pk::gTexturePool.getTexture(fileName)) { }
     } sprite_t;
 
     typedef struct sprite_animation {
@@ -40,7 +46,7 @@ namespace pk {
         sprite_animation() = default;
         explicit sprite_animation(
             const pk::sprite_animation_source_t& source
-        ) : texture(pk::gTexturePool.get(source.fileName)),
+        ) : texture(pk::gTexturePool.getTexture(source.fileName)),
             textureRect(
                 Rectangle{
                     0.0f, 

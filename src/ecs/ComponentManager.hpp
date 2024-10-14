@@ -54,6 +54,10 @@ namespace pk {
                 this->indexToEntity.erase(lastComponentIndex);
             }
 
+            const T& operator[](const pk::entity_t e) const {
+                return this->at(e);
+            }
+
             T& at(const pk::entity_t e) {
                 assert(this->entityToIndex.find(e) != this->entityToIndex.end());
                 return this->arr[this->entityToIndex[e]];
@@ -75,7 +79,7 @@ namespace pk {
     class ComponentManager {
 
         private:
-            std::unordered_map<pk::component_t, std::unique_ptr<pk::AbstractComponentArray>> componentMap{};
+            std::unordered_map<pk::component_id_t, std::unique_ptr<pk::AbstractComponentArray>> componentMap{};
 
         public:
             ComponentManager() {
@@ -86,17 +90,17 @@ namespace pk {
                 assert(this->componentMap.size() == pk::NUM_COMPONENTS);
             }
 
-            template<typename T, pk::component_t id>
+            template<typename T, pk::component_id_t id>
             void insert(const pk::entity_t e, const T c) {
                 dynamic_cast<pk::ComponentArray<T>*>(this->componentMap[id].get())->insert(e, std::move(c));
             }
 
-            template<typename T, pk::component_t id>
+            template<typename T, pk::component_id_t id>
             void erase(const pk::entity_t e) {
                 this->componentMap[id]->erase(e);
             }
 
-            template<typename T, pk::component_t id>
+            template<typename T, pk::component_id_t id>
             T& at(const pk::entity_t e) {
                 return dynamic_cast<pk::ComponentArray<T>*>(this->componentMap[id].get())->at(e);
             }
@@ -113,7 +117,7 @@ namespace pk {
                 }
             }
 
-            std::size_t size() const {
+            std::size_t countNumComponents() const {
                 std::size_t s{};
                 for (auto& pair : this->componentMap) {
                     s += pair.second->size();

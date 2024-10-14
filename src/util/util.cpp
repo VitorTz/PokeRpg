@@ -8,11 +8,3 @@ std::size_t pk::hash(const char *s) {
         hash = ((hash << 5) + hash) + c; // hash * 33 + c
     return hash;
 }
-
-
-void pk::loadMap(const pk::MapId mapId) {
-    std::ifstream file(pk::MAP_PATHS[mapId]);
-    assert(file.is_open());
-    
-    file.close();
-}

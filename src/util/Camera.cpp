@@ -4,40 +4,40 @@
 
 pk::Camera::Camera() {
     for (pk::zindex_t z = pk::CAMERA_MIN_ZINDEX; z <= pk::CAMERA_MAX_ZINDEX; z++) {
-        this->entities[z].reserve(pk::MAX_ENTITIES);
+        this->zindexToEntities[z].reserve(pk::MAX_ENTITIES);
     }
     this->reset();
 }
 
 
 void pk::Camera::reset() {
-    this->camera = Camera2D{
+    this->camera2D = Camera2D{
         .offset = pk::SCREEN_CENTER,
         .target = pk::SCREEN_CENTER,
         .rotation = 0.0f,
         .zoom = 1.0f
     };
     this->cameraRect = Rectangle{
-        this->camera.target.x - this->camera.offset.x,
-        this->camera.target.y - this->camera.offset.y,
+        this->camera2D.target.x - this->camera2D.offset.x,
+        this->camera2D.target.y - this->camera2D.offset.y,
         pk::SCREEN_W,
         pk::SCREEN_H
     };
 }
 
-void pk::Camera::move(const float x, const float y) {
-    this->camera.target.x += x;
-    this->camera.target.y += y;
+void pk::Camera::moveTarget(const float x, const float y) {
+    this->camera2D.target.x += x;
+    this->camera2D.target.y += y;
     this->cameraRect.x += x;
     this->cameraRect.y += y;
 }
 
 
 void pk::Camera::setTarget(const float x, const float y) {
-    this->camera.target.x = x;
-    this->camera.target.y = y;
-    this->cameraRect.x = x - this->camera.offset.x;
-    this->cameraRect.y = y - this->camera.offset.y;
+    this->camera2D.target.x = x;
+    this->camera2D.target.y = y;
+    this->cameraRect.x = x - this->camera2D.offset.x;
+    this->cameraRect.y = y - this->camera2D.offset.y;
 }
 
 
@@ -45,7 +45,7 @@ void pk::Camera::insert(const pk::entity_t e, const pk::zindex_t zindex) {
     assert(zindex >= pk::CAMERA_MIN_ZINDEX && zindex <= pk::CAMERA_MAX_ZINDEX);
     if (this->onCamera[e] == false) {
         this->onCamera[e] = true;
-        this->entities[zindex].emplace_back(0.0f, e);
+        this->zindexToEntities[zindex].emplace_back(0.0f, e);
         this->mSize++;
     }
 }
@@ -54,7 +54,7 @@ void pk::Camera::insert(const pk::entity_t e, const pk::zindex_t zindex) {
 void pk::Camera::erase(const pk::entity_t e, const pk::zindex_t zindex) {
     if (this->onCamera[e] == true) {
         this->onCamera[e] = false;
-        std::vector<std::pair<float, pk::entity_t>>& v = this->entities[zindex];
+        std::vector<std::pair<float, pk::entity_t>>& v = this->zindexToEntities[zindex];
         for (std::size_t i = 0; i < v.size(); i++) {
             if (v[i].second == e) {
                 v.erase(v.begin() + i);
@@ -67,7 +67,7 @@ void pk::Camera::erase(const pk::entity_t e, const pk::zindex_t zindex) {
 
 
 void pk::Camera::beginDrawing() const {
-    BeginMode2D(this->camera);
+    BeginMode2D(this->camera2D);
 }
 
 
@@ -76,23 +76,27 @@ void pk::Camera::endDrawing() const {
 }
 
 
-void pk::Camera::draw(pk::SystemManager* system) {
+/**
+ * Draws entities based on zindex and y position
+ * @param systemManager
+ */
+void pk::Camera::draw(pk::SystemManager* systemManager) {
     this->beginDrawing();
-        for (auto& p1 : this->entities) {
-            for (std::pair<float, pk::entity_t>& p2 : p1.second) {
-                const pk::transform_t& transform = pk::EcsController::getTransform(p2.second);
-                p2.first = transform.pos.y + transform.size.y / 2.0f;
+        for (auto&[zindex, vec] : this->zindexToEntities) {
+            for (auto&[yPos, entity] : vec) {
+                const pk::transform_t& transform = pk::EcsController::getTransform(entity);
+                yPos = transform.pos.y + transform.size.y / 2.0f;
             }
-            std::sort(p1.second.begin(), p1.second.end());
-            system->draw(p1.second);
+            std::sort(vec.begin(), vec.end());
+            systemManager->draw(vec);
         }
     this->endDrawing();
 }
 
 
 void pk::Camera::addZoom(const float zoom) {
-    this->camera.zoom = std::clamp(
-        this->camera.zoom + zoom,
+    this->camera2D.zoom = std::clamp(
+        this->camera2D.zoom + zoom,
         pk::CAMERA_MIN_ZOOM,
         pk::CAMERA_MAX_ZOOM
     );
@@ -105,7 +109,7 @@ void pk::Camera::handleMouseInput(const float dt) {
 
 
 void pk::Camera::setZoom(const float zoom) {
-    this->camera.zoom = std::clamp(
+    this->camera2D.zoom = std::clamp(
         zoom,
         pk::CAMERA_MIN_ZOOM,
         pk::CAMERA_MAX_ZOOM
@@ -114,7 +118,7 @@ void pk::Camera::setZoom(const float zoom) {
 
 
 void pk::Camera::clear() {
-    for (auto& pair : this->entities) {
+    for (auto& pair : this->zindexToEntities) {
         pair.second.clear();
     }
     for (bool& b : this->onCamera) {
@@ -129,5 +133,5 @@ std::size_t pk::Camera::size() const {
 
 
 const Camera2D &pk::Camera::getCamera2D() const {
-    return this->camera;
+    return this->camera2D;
 }

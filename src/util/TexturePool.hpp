@@ -12,8 +12,8 @@ namespace pk {
 
         public:
             TexturePool();
-            Texture2D get(const char* fileName);
-            void erase(const char* fileName);
+            Texture2D getTexture(const char* fileName);
+            void eraseTexture(const char* fileName);
             void unloadAllTextures();
             std::size_t size() const;
 

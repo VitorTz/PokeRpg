@@ -9,8 +9,8 @@ namespace pk {
     class Camera {
 
         private:
-            Camera2D camera{};
-            std::map<pk::zindex_t, std::vector<std::pair<float, pk::entity_t>>> entities{};
+            Camera2D camera2D{};
+            std::map<pk::zindex_t, std::vector<std::pair<float, pk::entity_t>>> zindexToEntities{};
             std::array<bool, pk::MAX_ENTITIES> onCamera{};
             Rectangle cameraRect{};
             std::size_t mSize{};
@@ -21,8 +21,8 @@ namespace pk {
             void erase(pk::entity_t e, pk::zindex_t zindex);
             void beginDrawing() const;
             void endDrawing() const;
-            void draw(pk::SystemManager* system);
-            void move(float x, float y);
+            void draw(pk::SystemManager* systemManager);
+            void moveTarget(float x, float y);
             void setTarget(float x, float y);
             void handleMouseInput(float dt);
             void addZoom(float zoom);

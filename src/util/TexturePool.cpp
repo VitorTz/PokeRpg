@@ -8,7 +8,7 @@ pk::TexturePool::TexturePool() {
 }
 
 
-Texture2D pk::TexturePool::get(const char* fileName) {
+Texture2D pk::TexturePool::getTexture(const char* fileName) {
     const std::size_t h = pk::hash(fileName);
     if (this->texturePool.find(h) == this->texturePool.end()) {
         this->texturePool.emplace(h, LoadTexture(fileName));
@@ -17,7 +17,7 @@ Texture2D pk::TexturePool::get(const char* fileName) {
 }
 
 
-void pk::TexturePool::erase(const char* fileName) {
+void pk::TexturePool::eraseTexture(const char* fileName) {
     const std::size_t h = pk::hash(fileName);
     if (this->texturePool.find(h) != this->texturePool.end()) {
         UnloadTexture(this->texturePool[h]);

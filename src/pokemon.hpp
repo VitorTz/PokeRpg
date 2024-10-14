@@ -26,7 +26,7 @@ namespace pk {
 
     // types
         typedef std::uint32_t entity_t;
-        typedef std::uint8_t component_t;
+        typedef std::uint8_t component_id_t;
         typedef std::uint8_t zindex_t;
 
         typedef struct sprite_animation_source {
