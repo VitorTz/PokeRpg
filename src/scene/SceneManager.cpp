@@ -1,28 +1,24 @@
-#include "Scene.hpp"
+//
+// Created by vitor on 10/19/24.
+//
+#include "Scene.h"
 
 
 void pk::SceneManager::init() {
     this->loadNextScene();
-    this->loadingScreen = std::make_unique<pk::LoadingScreen>();
 }
 
 
 void pk::SceneManager::loadNextScene() {
     switch (this->sceneId) {
-        case pk::SceneId::TestScene1Id:
-            this->scene = std::make_unique<pk::TestScene1>();
-            break;
-        case pk::SceneId::TestScene2Id:
-            this->scene = std::make_unique<pk::TestScene2>();
-            break;
-        case pk::SceneId::LevelSceneId:
-            this->scene = std::make_unique<pk::LevelScene>();
-            break;
-        case pk::SceneId::TitleScreenId:
+        case pk::TitleScreenId:
             this->scene = std::make_unique<pk::TitleScreen>();
             break;
-        case pk::SceneId::LoadingScreenId:
-            this->scene = std::make_unique<pk::LoadingScreen>();
+        case pk::LevelSceneId:
+            this->scene = std::make_unique<pk::Level>();
+            break;
+        case pk::TestScene1Id:
+            this->scene = std::make_unique<pk::TestScene1>();
             break;
         default:
             break;
@@ -31,8 +27,8 @@ void pk::SceneManager::loadNextScene() {
 
 
 void pk::SceneManager::changeScene(const pk::SceneId sceneId) {
-    this->sceneId = sceneId;
     this->shouldChangeScene = true;
+    this->sceneId = sceneId;
 }
 
 
@@ -48,3 +44,8 @@ void pk::SceneManager::update(const float dt) {
 void pk::SceneManager::draw() {
     this->scene->draw();
 }
+
+
+
+
+

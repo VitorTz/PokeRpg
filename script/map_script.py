@@ -27,35 +27,26 @@ def main() -> None:
             if (isinstance(i, TiledObjectGroup)):
                 i: TiledObjectGroup
                 file.write(f"{i.name}\n")
-                file.write(f"{len(i)}\n")                
+                file.write(f"{len(i)}\n")
                 try:
+                    line = ""
                     for tile in i:
-                        tile: TiledObject
-                        match i.name:
-                            case "Arena":
-                                file.write(f"{tile.properties['attribute']} {tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Trees":
-                                file.write(f"{tile.properties['tree-type']} {tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Monsters":
-                                file.write(f"{tile.properties['poke-type']} {tile.x:.2f} {tile.y:.2f}\n")
-                            case "Transition":
-                                file.write(f"{tile.properties['transition-type']} {tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f}\n")
-                            case "Pillar":
-                                file.write(f"{tile.properties['pillar']} {tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Palm":
-                                file.write(f"{tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Rock":
-                                file.write(f"{tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Sprites":
-                                file.write(f"{tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Hospital":
-                                file.write(f"{tile.x:.2f} {tile.y:.2f} {tile.properties['source'].replace('../tilesets/../../', './assets/')}\n")
-                            case "Collision":
-                                file.write(f"{tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f}\n")
-                            case _:
-                                pass                        
+                        tile: TiledObject                                     
+                        line = f"{tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f}"                                                
+
+                        try:
+                            match i.name:
+                                case "Sprites" | "Trees" | "Houses" | "Arena" | "Hospital":
+                                    line += " " + tile.properties["source"].replace("../tilesets/../../", "./assets/")
+                                case "Houses" | "Arena" | "Hospital" | "Transition":
+                                    line += " " + tile.name
+                        except Exception:
+                            pass
+                            
+                        line += '\n'
+                        file.write(line)
                 except Exception as e:
-                    print(i.name, tile.properties, tile.x, tile.y, e)
+                    print(f"Exception -> TileGroup={i.name} | properties={tile.properties} | x={tile.x} | y={tile.y}", e)
 
                 
 

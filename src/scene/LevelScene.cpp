@@ -1,16 +1,22 @@
-#include "Scene.hpp"
+//
+// Created by vitor on 10/19/24.
+//
+#include "Scene.h"
 
 
-pk::LevelScene::LevelScene() {
-    
-}
-
-
-void pk::LevelScene::update(const float dt) {
+pk::Level::Level() {
 
 }
 
 
-void pk::LevelScene::draw() {
-    
+void pk::Level::update(const float dt) {
+
 }
+
+
+void pk::Level::draw() {
+
+}
+
+
+
