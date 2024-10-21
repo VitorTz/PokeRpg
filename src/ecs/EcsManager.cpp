@@ -162,13 +162,13 @@ void pk::EcsManager::ecsInstanceCreate(const pk::MapId mapId) {
                 if (str == "Transition") {
                     mapFile >> x >> y >> width >> height;
                     mapFile >> auxStr;
-                    assert(pk::stringToTransitionType.find(auxStr) != pk::stringToTransitionType.end());
+                    assert(pk::gStringToTransitionType.find(auxStr) != pk::gStringToTransitionType.end());
                     addComponent(
                         entityCreate(pk::ZINDEX_MAX, true),
                         pk::transition_t{
                             false,
                             Rectangle{x, y, width, height},
-                            pk::stringToTransitionType.at(auxStr)
+                            pk::gStringToTransitionType.at(auxStr)
                         }
                     );
                     continue;
@@ -226,14 +226,8 @@ void pk::EcsManager::entityDestroyAll() {
     currentMapInstance->shouldDestroyAllEntities = true;
 }
 
-
-void pk::EcsManager::entityDestroyAllImmediate() {
-    currentMapInstance->camera.clear();
-    currentMapInstance->entity.clear();
-    currentMapInstance->component.clear();
-    currentMapInstance->system.clear();
-    currentMapInstance->shouldDestroyAllEntities = false;
-    currentMapInstance->entitiesToDestroy = std::queue<pk::entity_t>();
+pk::transform_t& pk::EcsManager::getTransform(const pk::entity_t e) {
+    return currentMapInstance->component.at<pk::transform_t>(e);
 }
 
 
@@ -252,11 +246,6 @@ void pk::EcsManager::addStaticCollision(const pk::entity_t e, const float width,
             height
         }
     );
-}
-
-
-pk::transform_t& pk::EcsManager::getTransform(const pk::entity_t e) {
-    return currentMapInstance->component.at<pk::transform_t>(e);
 }
 
 
@@ -286,7 +275,7 @@ std::pair<bool, pk::entity_t> pk::EcsManager::checkEntityCollision(const pk::ent
 }
 
 
-std::pair<bool, pk::TransitionType> pk::EcsManager::checkTransitionCollide(const Rectangle& rect) {
+std::pair<bool, pk::TransitionType> pk::EcsManager::checkTransition(const Rectangle& rect) {
     std::pair<bool, pk::TransitionType> r{};
     const pk::ComponentArray<pk::transition_t>* arr = currentMapInstance->component.getComponentArray<pk::transition_t>();
     if (IsKeyPressed(pk::ACTION_KEY)) {
@@ -302,8 +291,27 @@ std::pair<bool, pk::TransitionType> pk::EcsManager::checkTransitionCollide(const
 }
 
 
+void pk::EcsManager::entityDestroyImmediate(const pk::entity_t e) {
+    currentMapInstance->camera.erase(e, getTransform(e).zindex);
+    currentMapInstance->entity.entityDestroy(e);
+    currentMapInstance->component.entityDestroy(e);
+    currentMapInstance->system.entityDestroy(e);
+}
+
+
+void pk::EcsManager::entityDestroyAllImmediate() {
+    currentMapInstance->camera.clear();
+    currentMapInstance->entity.clear();
+    currentMapInstance->component.clear();
+    currentMapInstance->system.clear();
+    currentMapInstance->shouldDestroyAllEntities = false;
+    currentMapInstance->entitiesToDestroy = std::queue<pk::entity_t>();
+}
+
+
 void pk::EcsManager::update(const float dt) {
     currentMapInstance->system.update(dt);
+    currentMapInstance->camera.handleMouseInput(dt);
 
     if (currentMapInstance->shouldDestroyAllEntities) {
         entityDestroyAllImmediate();
@@ -312,18 +320,7 @@ void pk::EcsManager::update(const float dt) {
     while (currentMapInstance->entitiesToDestroy.empty() == false) {
         const pk::entity_t e = currentMapInstance->entitiesToDestroy.front();
         currentMapInstance->entitiesToDestroy.pop();
-        currentMapInstance->camera.erase(e, getTransform(e).zindex);
-        currentMapInstance->entity.entityDestroy(e);
-        currentMapInstance->component.entityDestroy(e);
-        currentMapInstance->system.entityDestroy(e);
-    }
-}
-
-
-void pk::EcsManager::draw() {
-    currentMapInstance->camera.draw(&currentMapInstance->system);
-    if (pk::DEBUG_MODE) {
-        pk::EcsManager::drawDebug();
+        entityDestroyImmediate(e);
     }
 }
 
@@ -340,3 +337,13 @@ void pk::EcsManager::drawDebug() {
         DrawRectangleLinesEx(currentMapInstance->player.actionBox, 2.0f, YELLOW);
     currentMapInstance->camera.endDrawing();
 }
+
+
+void pk::EcsManager::draw() {
+    currentMapInstance->camera.draw(&currentMapInstance->system);
+    if (pk::DEBUG_MODE) {
+        pk::EcsManager::drawDebug();
+    }
+}
+
+

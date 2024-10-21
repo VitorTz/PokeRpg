@@ -12,7 +12,7 @@ pk::TexturePool::TexturePool() {
 
 
 Texture2D pk::TexturePool::load(const char *fileName) {
-    const std::size_t h = pk::hash(fileName);
+    const std::size_t h = pk::basicHash(fileName);
     if (this->texturePool.find(h) == this->texturePool.end()) {
         this->texturePool.emplace(h, LoadTexture(fileName));
         assert(this->texturePool[h].id > 0);
@@ -22,7 +22,7 @@ Texture2D pk::TexturePool::load(const char *fileName) {
 
 
 void pk::TexturePool::erase(const char *fileName) {
-    const std::size_t h = pk::hash(fileName);
+    const std::size_t h = pk::basicHash(fileName);
     if (this->texturePool.find(h) != this->texturePool.end()) {
         UnloadTexture(this->texturePool[h]);
     }
@@ -41,7 +41,3 @@ void pk::TexturePool::clear() {
 std::size_t pk::TexturePool::size() const {
     return this->texturePool.size();
 }
-
-
-
-

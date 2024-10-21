@@ -27,10 +27,58 @@ namespace pk {
         void draw() override;
     };
 
-    class Level final : public pk::Scene {
+    class WorldScene final : public pk::Scene {
 
     public:
-        Level();
+        WorldScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class FireArenaScene final : public pk::Scene {
+
+    public:
+        FireArenaScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class PlantArenaScene final : public pk::Scene {
+
+    public:
+        PlantArenaScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class WaterArenaScene final : public pk::Scene {
+
+    public:
+        WaterArenaScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class HospitalScene final : public pk::Scene {
+
+    public:
+        HospitalScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class HouseScene final : public pk::Scene {
+
+    public:
+        HouseScene();
+        void update(float dt) override;
+        void draw() override;
+    };
+
+    class LoadingScreen final : public pk::Scene {
+
+    public:
+        LoadingScreen();
         void update(float dt) override;
         void draw() override;
     };
@@ -47,6 +95,7 @@ namespace pk {
 
     private:
         std::unique_ptr<pk::Scene> scene{};
+        std::unique_ptr<pk::LoadingScreen> loadingScreen{};
         pk::SceneId sceneId{pk::MAIN_SCENE};
         bool shouldChangeScene{};
 

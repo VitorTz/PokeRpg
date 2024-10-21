@@ -58,6 +58,7 @@ namespace pk {
         static pk::entity_t spriteCreate(pk::zindex_t zindex, float posX, float posY, const char* fileName);
 
         static void entityDestroy(pk::entity_t e);
+        static void entityDestroyImmediate(pk::entity_t e);
         static void entityDestroyAll();
         static void entityDestroyAllImmediate();
 
@@ -67,7 +68,7 @@ namespace pk {
 
         static bool checkStaticCollision(const Rectangle& rect);
         static std::pair<bool, pk::entity_t> checkEntityCollision(pk::entity_t e);
-        static std::pair<bool, pk::TransitionType> checkTransitionCollide(const Rectangle& rect);
+        static std::pair<bool, pk::TransitionType> checkTransition(const Rectangle& rect);
 
         template<typename T>
         static T& getComponent(const pk::entity_t e) {

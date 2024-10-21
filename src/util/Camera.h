@@ -32,6 +32,10 @@ namespace pk {
         explicit Camera(pk::MapId mapId);
         void reset();
 
+        void addZoom(float delta);
+        void setZoom(float zoom);
+        float getZoom() const;
+
         void setTarget(Vector2 target);
         Vector2 getTarget() const;
 
@@ -41,6 +45,7 @@ namespace pk {
         void insert(pk::entity_t e, pk::zindex_t zindex);
         void erase(pk::entity_t e, pk::zindex_t zindex);
 
+        void handleMouseInput(float dt);
         void draw(pk::SystemManager* system);
 
         void clear();

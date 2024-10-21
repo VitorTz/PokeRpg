@@ -9,7 +9,12 @@ namespace pk {
 
     enum SceneId {
         TitleScreenId,
-        LevelSceneId,
+        WorldSceneId,
+        HospitalSceneId,
+        FireArenaSceneId,
+        WaterArenaSceneId,
+        PlantArenaSceneId,
+        HouseSceneId,
         TestScene1Id
     };
 

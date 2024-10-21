@@ -6,6 +6,7 @@
 
 void pk::SceneManager::init() {
     this->loadNextScene();
+    this->loadingScreen = std::make_unique<pk::LoadingScreen>();
 }
 
 
@@ -14,8 +15,23 @@ void pk::SceneManager::loadNextScene() {
         case pk::TitleScreenId:
             this->scene = std::make_unique<pk::TitleScreen>();
             break;
-        case pk::LevelSceneId:
-            this->scene = std::make_unique<pk::Level>();
+        case pk::WorldSceneId:
+            this->scene = std::make_unique<pk::WorldScene>();
+            break;
+        case pk::FireArenaSceneId:
+            this->scene = std::make_unique<pk::FireArenaScene>();
+            break;
+        case pk::PlantArenaSceneId:
+            this->scene = std::make_unique<pk::PlantArenaScene>();
+            break;
+        case pk::WaterArenaSceneId:
+            this->scene = std::make_unique<pk::WaterArenaScene>();
+            break;
+        case pk::HospitalSceneId:
+            this->scene = std::make_unique<pk::HospitalScene>();
+            break;
+        case pk::HouseSceneId:
+            this->scene = std::make_unique<pk::HouseScene>();
             break;
         case pk::TestScene1Id:
             this->scene = std::make_unique<pk::TestScene1>();

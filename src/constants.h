@@ -6,7 +6,7 @@
 #define CONSTANTS_H
 #include <array>
 #include <raylib.h>
-#include "scene/SceneId.h"
+#include "util/SceneId.h"
 #include "util/types.h"
 #include "util/MapId.h"
 
@@ -28,19 +28,25 @@ namespace pk {
 
     // Game
     constexpr bool DEBUG_MODE{true};
-    constexpr pk::SceneId MAIN_SCENE{pk::TestScene1Id};
+    constexpr pk::SceneId MAIN_SCENE{pk::WorldSceneId};
     constexpr pk::entity_t MAX_ENTITIES{4096};
+    constexpr int LEFT_KEY{KEY_A};
+    constexpr int RIGHT_KEY{KEY_D};
+    constexpr int UP_KEY{KEY_W};
+    constexpr int DOWN_KEY{KEY_S};
     constexpr int ACTION_KEY{KEY_F};
 
     // Camera
     constexpr pk::zindex_t ZINDEX_MIN{0};
-        constexpr pk::zindex_t ZINDEX_GROUND{1};
-        constexpr pk::zindex_t ZINDEX_WATER{2};
-        constexpr pk::zindex_t ZINDEX_SHADOW{3};
-        constexpr pk::zindex_t ZINDEX_PLAYER{4};
-        constexpr pk::zindex_t ZINDEX_TOP{5};
-        constexpr pk::zindex_t ZINDEX_SKY{6};
+    constexpr pk::zindex_t ZINDEX_GROUND{1};
+    constexpr pk::zindex_t ZINDEX_WATER{2};
+    constexpr pk::zindex_t ZINDEX_SHADOW{3};
+    constexpr pk::zindex_t ZINDEX_PLAYER{4};
+    constexpr pk::zindex_t ZINDEX_TOP{5};
+    constexpr pk::zindex_t ZINDEX_SKY{6};
     constexpr pk::zindex_t ZINDEX_MAX{6};
+    constexpr float CAMERA_MIN_ZOOM{0.25};
+    constexpr float CAMERA_MAX_ZOOM{2.5};
 
     // TiledMap
     constexpr std::array<pk::tiled_map_info_t, pk::MapId::MapsNum> TILED_MAP_INFO = {

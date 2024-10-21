@@ -4,23 +4,34 @@
 #include "util.h"
 
 
-std::size_t pk::hash(const char *s) {
-    unsigned long hash = 5381;
+std::size_t pk::basicHash(const char *s) {
+    std::size_t hash = 5381;
     int c;
     while ((c = *s++))
-        hash = ((hash << 5) + hash) + c;
+        hash = (hash << 5) + hash + c;
     return hash;
 }
 
 
+std::size_t pk::hash(const char *s) {
+    constexpr int m = 1e9 + 9;
+    constexpr int p = 31;
+    long long hash_value = 0;
+    long long p_pow = 1;
+    int c;
+    while ((c = *s++)) {
+        hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+        p_pow = p_pow * p % m;
+    }
+    return hash_value;
+}
+
 
 bool pk::checkTransformCollision(const pk::transform_t &l, const pk::transform_t &r) {
-    bool collision = false;
-    if (
-        (l.pos.x < (r.pos.x + r.size.x) && (l.pos.x + l.size.x) > r.pos.x) &&
-        (l.pos.y < (r.pos.y + r.size.y) && (l.pos.y + l.size.y) > r.pos.y)
-    ) collision = true;
-    return collision;
+    return l.pos.x < r.pos.x + r.size.x &&
+           l.pos.x + l.size.x > r.pos.x &&
+           l.pos.y < r.pos.y + r.size.y &&
+           l.pos.y + l.size.y > r.pos.y;
 }
 
 
@@ -31,4 +42,3 @@ Vector2 pk::getCenter(const pk::transform_t &t) {
     };
     return c;
 }
-

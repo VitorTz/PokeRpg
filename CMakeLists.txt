@@ -33,10 +33,10 @@ add_executable (${PROJECT_NAME} src/main.cpp
         src/util/util.h
         src/util/util.cpp
         src/scene/Scene.h
-        src/scene/SceneId.h
+        src/util/SceneId.h
         src/scene/SceneManager.cpp
         src/scene/TitleScreen.cpp
-        src/scene/LevelScene.cpp
+        src/scene/WorldScene.cpp
         src/ecs/components.h
         src/util/types.h
         src/util/TypeId.h
@@ -59,7 +59,13 @@ add_executable (${PROJECT_NAME} src/main.cpp
         src/ecs/SystemPlayer.cpp
         src/util/PokeType.h
         src/util/TransitionType.h
-        src/ecs/SystemTransition.cpp)
+        src/ecs/SystemTransition.cpp
+        src/scene/FireArenaScene.cpp
+        src/scene/PlantArenaScene.cpp
+        src/scene/WaterArenaScene.cpp
+        src/scene/HospitalScene.cpp
+        src/scene/HouseScene.cpp
+        src/scene/LoadingScreen.cpp)
 
 
 if ("${PLATFORM}" STREQUAL "Web")

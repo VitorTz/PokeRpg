@@ -1,13 +1,11 @@
 //
 // Created by vitor on 10/20/24.
 //
-#include "SystemManager.h"
 #include "EcsManager.h"
+#include "SystemManager.h"
 
 
-void pk::SpriteSystem::update([[maybe_unused]] float dt) {
-
-}
+void pk::SpriteSystem::update([[maybe_unused]] float dt) { }
 
 
 void pk::SpriteSystem::draw(const pk::entity_t e) {

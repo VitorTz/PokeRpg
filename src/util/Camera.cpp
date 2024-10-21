@@ -78,6 +78,26 @@ Vector2 pk::Camera::getTarget() const {
 }
 
 
+void pk::Camera::addZoom(const float delta) {
+    this->camera2D.zoom = std::clamp(this->camera2D.zoom + delta, pk::CAMERA_MIN_ZOOM, pk::CAMERA_MAX_ZOOM);
+}
+
+
+void pk::Camera::setZoom(const float zoom) {
+    this->camera2D.zoom = std::clamp(zoom, pk::CAMERA_MIN_ZOOM, pk::CAMERA_MAX_ZOOM);
+}
+
+
+float pk::Camera::getZoom() const {
+    return this->camera2D.zoom;
+}
+
+
+void pk::Camera::handleMouseInput(const float dt) {
+    this->addZoom(GetMouseWheelMove() * dt * 2.0f);
+}
+
+
 void pk::Camera::clear() {
     for (auto& pair : this->entities) {
         pair.second.clear();

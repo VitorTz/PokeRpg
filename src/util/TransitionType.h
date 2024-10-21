@@ -18,7 +18,7 @@ namespace pk {
         HouseTransition
     };
 
-    const static std::unordered_map<std::string, pk::TransitionType> stringToTransitionType = {
+    inline std::unordered_map<std::string, pk::TransitionType> gStringToTransitionType = {
         {"House", pk::HouseTransition},
         {"Hospital", pk::HospitalTransition},
         {"Fire-Arena", pk::FireArenaTransition},
@@ -26,7 +26,7 @@ namespace pk {
         {"Plant-Arena", pk::PlantArenaTransition}
     };
 
-    const static std::unordered_map<pk::TransitionType, std::string> transitionTypeToString = {
+    inline std::unordered_map<pk::TransitionType, std::string> gTransitionTypeToString = {
         {pk::HouseTransition, "House"},
         {pk::HospitalTransition, "Hospital"},
         {pk::FireArenaTransition, "Fire-Arena"},

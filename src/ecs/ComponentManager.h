@@ -99,7 +99,6 @@ namespace pk {
 
     };
 
-
     class ComponentManager {
 
     private:

@@ -5,10 +5,10 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 #include <raylib.h>
-#include "../util/TexturePool.h"
-#include "../util/types.h"
-#include "../util/TransitionType.h"
 #include "../util/PokeType.h"
+#include "../util/TexturePool.h"
+#include "../util/TransitionType.h"
+#include "../util/types.h"
 
 
 namespace pk {

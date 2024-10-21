@@ -1,10 +1,10 @@
 //
 // Created by vitor on 10/20/24.
 //
-#include <iostream>
 #include "EcsManager.h"
 #include "raymath.h"
 #include "SystemManager.h"
+#include "../scene/Scene.h"
 #include "../util/util.h"
 
 
@@ -15,28 +15,27 @@ void pk::PlayerSystem::update(const float dt) {
 
     // movement
         Vector2 direction{};
-        const pk::Direction lastDirection = player.status.direction;
-        const bool lastMovingStatus = player.status.isMoving;
-        player.status.isMoving = false;
+        const pk::Direction lastDirection = player.direction;
+        const bool lastMovingStatus = player.isMoving;
+        player.isMoving = false;
 
-        if (IsKeyDown(KEY_W)) {
+        if (IsKeyDown(pk::UP_KEY)) {
             direction.y = -1.0f;
-            player.status.direction = pk::Up;
-            player.status.isMoving = true;
-        } else if (IsKeyDown(KEY_S)) {
+            player.direction = pk::Up;
+            player.isMoving = true;
+        } else if (IsKeyDown(pk::DOWN_KEY)) {
             direction.y = 1.0f;
-            player.status.direction = pk::Down;
-            player.status.isMoving = true;
+            player.direction = pk::Down;
+            player.isMoving = true;
         }
-
-        if (IsKeyDown(KEY_A)) {
+        if (IsKeyDown(pk::LEFT_KEY)) {
             direction.x = -1.0f;
-            player.status.direction = pk::Left;
-            player.status.isMoving = true;
-        } else if (IsKeyDown(KEY_D)) {
+            player.direction = pk::Left;
+            player.isMoving = true;
+        } else if (IsKeyDown(pk::RIGHT_KEY)) {
             direction.x = 1.0f;
-            player.status.direction = pk::Right;
-            player.status.isMoving = true;
+            player.direction = pk::Right;
+            player.isMoving = true;
         }
 
         direction = Vector2Normalize(direction);
@@ -58,23 +57,24 @@ void pk::PlayerSystem::update(const float dt) {
             if (pk::EcsManager::checkStaticCollision(player.collisionBox)) {
                 playerTransform.pos.y -= deltaY;
             }
-            player.center = pk::getCenter(playerTransform);
+
+        player.center = pk::getCenter(playerTransform);
 
     // Sprite Animation and ActionBox
-        if (player.status.isMoving == false) {
+        if (player.isMoving == false) {
             spriteAnimation.textureRect.x = 0.0f;
             spriteAnimation.spriteIndex = 0;
             spriteAnimation.frame = 0;
         } else if (
-            player.status.direction != lastDirection ||
-            player.status.isMoving != lastMovingStatus
+            player.direction != lastDirection ||
+            player.isMoving != lastMovingStatus
         ) {
             spriteAnimation.textureRect.x = pk::PLAYER_SIZE.x;
             spriteAnimation.spriteIndex = 1;
             spriteAnimation.frame = 0;
         }
 
-        switch (player.status.direction) {
+        switch (player.direction) {
             case pk::Down:
                 spriteAnimation.textureRect.y = 0.0f;
                 player.actionBox.width = pk::PLAYER_ACTION_BOX.height;
@@ -106,9 +106,27 @@ void pk::PlayerSystem::update(const float dt) {
         }
 
     // Transition
-        const std::pair<bool, pk::TransitionType> transitionCollide = pk::EcsManager::checkTransitionCollide(player.actionBox);
+        const std::pair<bool, pk::TransitionType> transitionCollide = pk::EcsManager::checkTransition(player.actionBox);
         if (transitionCollide.first == true) {
-            std::cout << static_cast<int>(transitionCollide.second) << '\n';
+            switch (transitionCollide.second) {
+                case pk::TransitionType::HospitalTransition:
+                    pk::gSceneManager.changeScene(pk::HospitalSceneId);
+                    break;
+                case pk::TransitionType::HouseTransition:
+                    pk::gSceneManager.changeScene(pk::HouseSceneId);
+                    break;
+                case pk::TransitionType::FireArenaTransition:
+                    pk::gSceneManager.changeScene(pk::FireArenaSceneId);
+                    break;
+                case pk::TransitionType::PlantArenaTransition:
+                    pk::gSceneManager.changeScene(pk::PlantArenaSceneId);
+                    break;
+                case pk::TransitionType::WaterArenaTransition:
+                    pk::gSceneManager.changeScene(pk::WaterArenaSceneId);
+                    break;
+                default:
+                    break;
+            }
         }
 
 }
