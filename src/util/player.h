@@ -21,7 +21,7 @@ namespace pk {
         Rectangle actionBox{pk::PLAYER_ACTION_BOX};
         Vector2 center{};
         pk::Direction direction{pk::Direction::Down};
-        pk::Action action{pk::Action::NoAction};
+        pk::Action action{pk::Action::None};
         bool isMoving{};
         player() = default;
         player(

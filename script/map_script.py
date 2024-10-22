@@ -37,7 +37,7 @@ def main() -> None:
                         try:
                             match i.name:
                                 case "Sprites" | "Trees" | "Houses" | "Arena" | "Hospital":
-                                    line += " " + tile.properties["source"].replace("../tilesets/../../", "./assets/")
+                                    line += " " + tile.properties["source"].replace("../tilesets/../../", "")
                                 case "Houses" | "Arena" | "Hospital" | "Transition":
                                     line += " " + tile.name
                         except Exception:

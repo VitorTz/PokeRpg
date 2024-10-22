@@ -8,7 +8,7 @@
 namespace pk {
 
     enum Action {
-        NoAction
+        None
     };
 
 }

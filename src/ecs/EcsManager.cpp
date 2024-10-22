@@ -2,7 +2,7 @@
 // Created by vitor on 10/19/24.
 //
 #include "EcsManager.h"
-
+#include "../util/TiledMap.h"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -59,127 +59,24 @@ pk::entity_t pk::EcsManager::spriteCreate(
 }
 
 
+void pk::EcsManager::setCurrentEcsInstance(const pk::MapId mapId) {
+    assert(ecsInstanceMap.find(mapId) != ecsInstanceMap.end());
+    currentMapId = mapId;
+    currentMapInstance = ecsInstanceMap[mapId].get();
+}
+
+
+pk::MapId pk::EcsManager::getCurrentMapId() {
+    return currentMapId;
+}
+
+
 void pk::EcsManager::ecsInstanceCreate(const pk::MapId mapId) {
     if (ecsInstanceMap.find(mapId) != ecsInstanceMap.end()) {
         return;
     }
-
-    const pk::MapId lastMapId = pk::EcsManager::currentMapId;
-    const pk::tiled_map_info_t& mapInfo = pk::TILED_MAP_INFO[mapId];
-
     ecsInstanceMap.emplace(mapId, std::make_unique<pk::EcsManager::ecs_instance_t>(mapId));
-    setCurrentEcsInstance(mapId);
-
-    // Player
-        currentMapInstance->player = pk::player_t{
-            entityCreate(pk::ZINDEX_PLAYER, true),
-            entityCreate(pk::ZINDEX_SHADOW, true)
-        };
-        pk::transform_t& playerTransform = getTransform(currentMapInstance->player.playerEntity);
-        playerTransform.pos.x = mapInfo.playerStartPos.x - pk::PLAYER_SIZE.x / 2.0f;
-        playerTransform.pos.y = mapInfo.playerStartPos.x - pk::PLAYER_SIZE.y / 2.0f;
-        playerTransform.size = pk::PLAYER_SIZE;
-        addComponent(currentMapInstance->player.playerEntity, pk::sprite_animation_t{pk::PLAYER_SPRITE_ANIMATION});
-
-    std::string auxStr{};
-    std::string str{};
-    // Map World Sprite
-        str = ASSETS_PATH;
-        str += "data/maps/";
-        str += mapInfo.name;
-        str += ".png";
-        spriteCreate(pk::ZINDEX_GROUND, str.c_str());
-
-    // Map World objects
-        str = ASSETS_PATH;
-        str += "data/maps/";
-        str += mapInfo.name;
-        str += ".txt";
-        std::fstream mapFile(str);
-        assert(mapFile.is_open());
-
-        while (mapFile >> str) {
-            pk::entity_t e;
-            float x, y, width, height;
-            int n;
-            mapFile >> n;
-
-            for (int i = 0; i < n; i++) {
-                if (str == "Objects") {
-                    mapFile >> auxStr;
-                    mapFile >> x >> y >> width >> height;
-                    if (auxStr == "Player") {
-                        playerTransform.pos = Vector2{x, y};
-                    }
-                    continue;
-                }
-
-                if (str == "Collision") {
-                    mapFile >> x >> y >> width >> height;
-                    currentMapInstance->staticCollisions.push_back(Rectangle{x, y, width, height});
-                    continue;
-                }
-
-                if (str == "Sprites") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    spriteCreate(pk::ZINDEX_PLAYER, x, y, auxStr.c_str());
-                    continue;
-                }
-
-                if (str == "Trees") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    addStaticCollision(
-                        spriteCreate(pk::ZINDEX_PLAYER, x, y, auxStr.c_str()),
-                        48.0f,
-                        48.0f
-                    );
-                    continue;
-                }
-
-                if (str == "Houses") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    spriteCreate(pk::ZINDEX_PLAYER, x, y, auxStr.c_str());
-                    continue;
-                }
-
-                if (str == "Arena") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    spriteCreate(pk::ZINDEX_PLAYER, x, y, auxStr.c_str());
-                    continue;
-                }
-
-                if (str == "Hospital") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    spriteCreate(pk::ZINDEX_PLAYER, x, y, auxStr.c_str());
-                    continue;
-                }
-
-                if (str == "Transition") {
-                    mapFile >> x >> y >> width >> height;
-                    mapFile >> auxStr;
-                    assert(pk::gStringToTransitionType.find(auxStr) != pk::gStringToTransitionType.end());
-                    addComponent(
-                        entityCreate(pk::ZINDEX_MAX, true),
-                        pk::transition_t{
-                            false,
-                            Rectangle{x, y, width, height},
-                            pk::gStringToTransitionType.at(auxStr)
-                        }
-                    );
-                    continue;
-                }
-
-            }
-        }
-
-        mapFile.close();
-
-    setCurrentEcsInstance(lastMapId);
+    pk::TiledMap::loadMap(mapId);
 }
 
 
@@ -196,13 +93,6 @@ pk::player_t& pk::EcsManager::getPlayer(const pk::MapId mapId) {
 
 void pk::EcsManager::ecsInstanceDestroy(const pk::MapId mapId) {
     ecsInstanceMap.erase(mapId);
-}
-
-
-void pk::EcsManager::setCurrentEcsInstance(const pk::MapId mapId) {
-    assert(ecsInstanceMap.find(mapId) != ecsInstanceMap.end());
-    currentMapId = mapId;
-    currentMapInstance = ecsInstanceMap[mapId].get();
 }
 
 

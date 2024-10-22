@@ -44,6 +44,7 @@ namespace pk {
 
         static void ecsInstanceCreate(pk::MapId mapId);
         static void ecsInstanceDestroy(pk::MapId mapId);
+        static pk::MapId getCurrentMapId();
         static void setCurrentEcsInstance(pk::MapId mapId);
 
         static pk::player_t& getPlayer();

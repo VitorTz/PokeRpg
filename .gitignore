@@ -1,4 +1,5 @@
 .idea
 cmake-build*
+.vscode
 .cache
 build

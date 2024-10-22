@@ -14,11 +14,11 @@ namespace pk {
     class TexturePool {
 
     private:
-        std::unordered_map<std::size_t, Texture2D> texturePool{};
+        std::unordered_map<std::size_t, Texture2D> texturePool{};        
 
     public:
         TexturePool();
-        Texture2D load(const char* fileName);
+        Texture2D load(const char* fileName);        
         void erase(const char* fileName);
         void clear();
         std::size_t size() const;

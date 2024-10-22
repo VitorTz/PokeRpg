@@ -5,7 +5,6 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 #include <raylib.h>
-#include "../util/PokeType.h"
 #include "../util/TexturePool.h"
 #include "../util/TransitionType.h"
 #include "../util/types.h"
@@ -13,15 +12,15 @@
 
 namespace pk {
 
-    constexpr  std::size_t NUM_COMPONENTS{4};
-    constexpr  std::size_t NUM_DRAWABLE_COMPONENTS{3};
+    constexpr std::size_t NUM_COMPONENTS{4};
+    constexpr std::size_t NUM_DRAWABLE_COMPONENTS{3};
 
     typedef struct transform {
         Vector2 pos{};
         Vector2 size{};
         pk::zindex_t zindex{};
         transform() = default;
-        explicit transform(const pk::zindex_t zindex) : zindex(zindex) { }
+        explicit transform(const pk::zindex_t _zindex) : zindex(_zindex) { }
     } transform_t;
 
     typedef struct sprite {

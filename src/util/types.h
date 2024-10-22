@@ -5,6 +5,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 #include <cstdint>
+#include <raylib.h>
 
 
 namespace pk {
@@ -22,6 +23,8 @@ namespace pk {
 
     typedef struct tiled_map_info {
         const char* name{};
+        const char* txtFile{};
+        const char* groundImagePath{};
         float width{};
         float height{};
         std::size_t rows{};

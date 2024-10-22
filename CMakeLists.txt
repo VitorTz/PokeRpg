@@ -24,8 +24,6 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 
-file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.h*")
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 add_executable (${PROJECT_NAME} src/main.cpp
         src/constants.h
         src/util/TexturePool.h
@@ -65,7 +63,17 @@ add_executable (${PROJECT_NAME} src/main.cpp
         src/scene/WaterArenaScene.cpp
         src/scene/HospitalScene.cpp
         src/scene/HouseScene.cpp
-        src/scene/LoadingScreen.cpp)
+        src/scene/LoadingScreen.cpp
+        src/util/TiledMap.h
+        src/util/TiledMap.cpp)
+
+        
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:Debug>:-Wall -Wextra -Wpedantic -g>
+    $<$<CONFIG:Release>:-O3 -DNDEBUG>
+    $<$<CONFIG:RelWithDebInfo>:-O2 -g>
+    $<$<CONFIG:MinSizeRel>:-Os>
+)
 
 
 if ("${PLATFORM}" STREQUAL "Web")

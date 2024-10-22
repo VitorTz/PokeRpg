@@ -107,10 +107,10 @@ void pk::Camera::clear() {
 
 void pk::Camera::reset() {
     this->camera2D = {
-        .offset = pk::SCREEN_CENTER,
-        .target = pk::SCREEN_CENTER,
-        .rotation = 0.0f,
-        .zoom = 1.0f
+        pk::SCREEN_CENTER,
+        pk::SCREEN_CENTER,
+        0.0f,
+        1.0f
     };
 }
 

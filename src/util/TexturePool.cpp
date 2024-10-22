@@ -21,6 +21,7 @@ Texture2D pk::TexturePool::load(const char *fileName) {
 }
 
 
+
 void pk::TexturePool::erase(const char *fileName) {
     const std::size_t h = pk::basicHash(fileName);
     if (this->texturePool.find(h) != this->texturePool.end()) {

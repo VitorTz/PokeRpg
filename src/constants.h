@@ -11,7 +11,7 @@
 #include "util/MapId.h"
 
 
-#define ASSETS_PATH "./assets/"
+#define ASSETS_PATH "./src/assets/"
 
 
 namespace pk {
@@ -28,7 +28,7 @@ namespace pk {
 
     // Game
     constexpr bool DEBUG_MODE{true};
-    constexpr pk::SceneId MAIN_SCENE{pk::WorldSceneId};
+    constexpr pk::SceneId MAIN_SCENE{pk::TitleScreenId};
     constexpr pk::entity_t MAX_ENTITIES{4096};
     constexpr int LEFT_KEY{KEY_A};
     constexpr int RIGHT_KEY{KEY_D};
@@ -50,7 +50,16 @@ namespace pk {
 
     // TiledMap
     constexpr std::array<pk::tiled_map_info_t, pk::MapId::MapsNum> TILED_MAP_INFO = {
-        pk::tiled_map_info_t{"world", 5504, 5504, 86, 86, Vector2{4257.0f, 3489.0f}}
+        pk::tiled_map_info_t{
+            "world", 
+            ASSETS_PATH "data/maps/world.txt", 
+            ASSETS_PATH "data/maps/world.png",
+            5504, 
+            5504, 
+            86, 
+            86, 
+            Vector2{4257.0f, 3489.0f}
+        }
     };
 
     // Player

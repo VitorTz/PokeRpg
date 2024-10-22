@@ -5,7 +5,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 #include <memory>
+#include <array>
 #include "../constants.h"
+#include "raylib.h"
 
 
 namespace pk {
@@ -20,6 +22,14 @@ namespace pk {
     };
 
     class TitleScreen final : public pk::Scene {
+        
+    private:
+        std::array<Vector2, 2> backgroundPos{};
+        Vector2 logoPos{};
+        Vector2 pressSpacePos{};
+        Texture2D pressSpace{};
+        Texture2D logo{};
+        Texture2D background{};
 
     public:
         TitleScreen();
