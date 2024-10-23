@@ -1,33 +1,40 @@
-//
-// Created by vitor on 10/19/24.
-//
-#include "Scene.h"
+#include "Scene.hpp"
 #include "raylib.h"
-#include "../util/TexturePool.h"
+#include <array>
+#include "../util/TexturePool.hpp"
+
+
+Texture2D backgroundImage{};
+Texture2D logoImage{};
+Texture2D pressStartImage{};
+Vector2 logoPos{};
+Vector2 pressStartPos{};
+std::array<Vector2, 2> pos{
+    Vector2{0.0f, 0.0f},
+    Vector2{pk::SCREEN_W, 0.0f},
+};
 
 
 pk::TitleScreen::TitleScreen() {
-    this->backgroundPos[0] = Vector2{0.0f, 0.0f};
-    this->backgroundPos[1] = Vector2{pk::SCREEN_W, 0.0f};
-    this->background = pk::gTexturePool.load(ASSETS_PATH "graphics/backgrounds/title-screen-background.png");
-    this->logo = pk::gTexturePool.load(ASSETS_PATH "graphics/ui/logo.png");
-    this->pressSpace = pk::gTexturePool.load(ASSETS_PATH "graphics/ui/press-space.png");
-    this->logoPos = Vector2{
-        pk::SCREEN_CENTERX - this->logo.width / 2.0f,
-        pk::SCREEN_CENTERY - this->logo.height / 2.0f
+    backgroundImage = pk::gTexturePool.get(ASSETS_PATH "graphics/backgrounds/title-screen.png");
+    logoImage = pk::gTexturePool.get(ASSETS_PATH "graphics/ui/logo.png");
+    pressStartImage = pk::gTexturePool.get(ASSETS_PATH "graphics/ui/press-space.png");
+    logoPos = {
+        pk::SCREEN_CENTERX - logoImage.width / 2.0f,
+        pk::SCREEN_CENTERY - logoImage.height / 2.0f
     };
-    this->pressSpacePos = Vector2{
-        pk::SCREEN_CENTERX - this->pressSpace.width / 2.0f,
-        this->logoPos.y + this->logo.height + 40.0f
+    pressStartPos = {
+        pk::SCREEN_CENTERX - pressStartImage.width / 2.0f,
+        pk::SCREEN_H - pressStartImage.height - 40.0f
     };
 }
 
 
 void pk::TitleScreen::update(const float dt) {
-    for (Vector2& pos : this->backgroundPos) {
-        pos.x -= dt * 150.0f;
-        if (pos.x + pk::SCREEN_W <= 0.0f) {
-            pos.x += pk::SCREEN_W * 2.0f;
+    for (Vector2& v : pos) {
+        v.x -= dt * 150.0f;
+        if (v.x + pk::SCREEN_W < 0.0f) {
+            v.x *= pk::SCREEN_W * 2.0f;
         }
     }
     if (IsKeyPressed(KEY_SPACE)) {
@@ -37,11 +44,8 @@ void pk::TitleScreen::update(const float dt) {
 
 
 void pk::TitleScreen::draw() {
-    DrawTextureRec(this->background, Rectangle{0.0f, 0.0f, pk::SCREEN_W, pk::SCREEN_H}, this->backgroundPos[0], WHITE);
-    DrawTextureRec(this->background, Rectangle{0.0f, 0.0f, -pk::SCREEN_W, pk::SCREEN_H}, this->backgroundPos[1], WHITE);
-    DrawTextureV(this->logo, this->logoPos, WHITE);
-    DrawTextureV(this->pressSpace, this->pressSpacePos, WHITE);
+    DrawTextureRec(backgroundImage, {0.0f, 0.0f, pk::SCREEN_W, pk::SCREEN_H}, pos[0], WHITE);
+    DrawTextureRec(backgroundImage, {0.0f, 0.0f, -pk::SCREEN_W, pk::SCREEN_H}, pos[1], WHITE);
+    DrawTextureV(logoImage, logoPos, WHITE);
+    DrawTextureV(pressStartImage, pressStartPos, WHITE);
 }
-
-
-

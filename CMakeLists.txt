@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.28)
 project(PokeRpg)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -24,48 +24,9 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 
-add_executable (${PROJECT_NAME} src/main.cpp
-        src/constants.h
-        src/util/TexturePool.h
-        src/util/TexturePool.cpp
-        src/util/util.h
-        src/util/util.cpp
-        src/scene/Scene.h
-        src/util/SceneId.h
-        src/scene/SceneManager.cpp
-        src/scene/TitleScreen.cpp
-        src/scene/WorldScene.cpp
-        src/ecs/components.h
-        src/util/types.h
-        src/util/TypeId.h
-        src/ecs/EcsManager.h
-        src/ecs/EcsManager.cpp
-        src/util/MapId.h
-        src/util/player.h
-        src/util/Direction.h
-        src/util/Action.h
-        src/ecs/EntityManager.h
-        src/ecs/EntityManager.cpp
-        src/ecs/SystemManager.h
-        src/ecs/ComponentManager.h
-        src/util/Camera.h
-        src/util/Camera.cpp
-        src/scene/TestScene1.cpp
-        src/ecs/SystemTransform.cpp
-        src/ecs/SystemSprite.cpp
-        src/ecs/SystemSpriteAnimation.cpp
-        src/ecs/SystemPlayer.cpp
-        src/util/PokeType.h
-        src/util/TransitionType.h
-        src/ecs/SystemTransition.cpp
-        src/scene/FireArenaScene.cpp
-        src/scene/PlantArenaScene.cpp
-        src/scene/WaterArenaScene.cpp
-        src/scene/HospitalScene.cpp
-        src/scene/HouseScene.cpp
-        src/scene/LoadingScreen.cpp
-        src/util/TiledMap.h
-        src/util/TiledMap.cpp)
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+add_executable (${PROJECT_NAME} ${sources} ${headers})
 
         
 target_compile_options(${PROJECT_NAME} PRIVATE

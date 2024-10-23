@@ -1,9 +1,5 @@
-//
-// Created by vitor on 10/19/24.
-//
-
-#ifndef TEXTUREPOOL_H
-#define TEXTUREPOOL_H
+#pragma once
+#include <cstddef>
 #include <raylib.h>
 #include <unordered_map>
 
@@ -14,11 +10,11 @@ namespace pk {
     class TexturePool {
 
     private:
-        std::unordered_map<std::size_t, Texture2D> texturePool{};        
+        std::unordered_map<std::size_t, Texture2D> texturePool{};
 
     public:
         TexturePool();
-        Texture2D load(const char* fileName);        
+        Texture2D get(const char* fileName);
         void erase(const char* fileName);
         void clear();
         std::size_t size() const;
@@ -28,5 +24,3 @@ namespace pk {
     inline pk::TexturePool gTexturePool{};
 
 }
-
-#endif //TEXTUREPOOL_H

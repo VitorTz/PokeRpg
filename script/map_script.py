@@ -7,10 +7,12 @@ from enum import Enum, auto
 class MapId(Enum):
 
     World = auto()
+    Hospital = auto()
 
 
 MAPS = {
-    MapId.World: ("../src/assets/data/maps/world.tmx", "../src/assets/data/maps/world.txt")
+    MapId.World: ("../src/assets/data/maps/world.tmx", "../src/assets/data/maps/world.txt"),
+    MapId.Hospital: ("../src/assets/data/maps/hospital.tmx", "../src/assets/data/maps/hospital.txt"),
 }
 
 
@@ -27,28 +29,14 @@ def main() -> None:
             if (isinstance(i, TiledObjectGroup)):
                 i: TiledObjectGroup
                 file.write(f"{i.name}\n")
-                file.write(f"{len(i)}\n")
-                try:
-                    line = ""
-                    for tile in i:
-                        tile: TiledObject                                     
-                        line = f"{tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f}"                                                
-
-                        try:
-                            match i.name:
-                                case "Sprites" | "Trees" | "Houses" | "Arena" | "Hospital":
-                                    line += " " + tile.properties["source"].replace("../tilesets/../../", "")
-                                case "Houses" | "Arena" | "Hospital" | "Transition":
-                                    line += " " + tile.name
-                        except Exception:
-                            pass
-                            
-                        line += '\n'
-                        file.write(line)
-                except Exception as e:
-                    print(f"Exception -> TileGroup={i.name} | properties={tile.properties} | x={tile.x} | y={tile.y}", e)
-
-                
+                file.write(f"{len(i)} {i.properties['group-id']}\n")
+                for tile in i:
+                    tile: TiledObject
+                    line = f"{tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f} "
+                    line += tile.properties.get("mId", "-1")
+                    line = line.strip() + " "
+                    line += tile.properties.get("source", "").replace("../tilesets/../../", "")
+                    file.write(f"{line.strip()}\n")
 
 
 if __name__ == "__main__":

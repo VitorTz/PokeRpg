@@ -1,29 +1,40 @@
-//
-// Created by vitor on 10/19/24.
-//
-#include "constants.h"
-#include "ecs/EcsManager.h"
-#include "scene/Scene.h"
-#include "util/TexturePool.h"
+#include <raylib.h>
+#include "constants.hpp"
+#include "scene/Scene.hpp"
+#include "util/TexturePool.hpp"
+
+
+#if defined(PLATFORM_WEB)
+    #include <emscripten/emscripten.h>
+#endif
+
+
+void mainloop() {
+    pk::gSceneManager.update(GetFrameTime());
+    BeginDrawing();
+    ClearBackground(BLACK);
+    pk::gSceneManager.draw();
+    EndDrawing();
+}
 
 
 int main() {
     InitWindow(pk::SCREEN_W, pk::SCREEN_H, pk::WINDOW_TITLE);
-    SetTargetFPS(pk::FPS);
-
-    pk::EcsManager::init();
+    
     pk::gSceneManager.init();
-
-    while (WindowShouldClose() == false) {
-        pk::gSceneManager.update(GetFrameTime());
-        BeginDrawing();
-        ClearBackground(BLACK);
-        pk::gSceneManager.draw();
-        EndDrawing();
+    
+    #if defined(PLATFORM_WEB)
+        emscripten_set_main_loop(mainloop, 60, 1);
+    #else
+        SetTargetFPS(60);
+    
+    while (!WindowShouldClose()) {
+        mainloop();
     }
 
+    #endif
+    
     pk::gTexturePool.clear();
     CloseWindow();
-
     return 0;
 }
