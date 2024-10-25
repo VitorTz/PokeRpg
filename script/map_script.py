@@ -29,11 +29,11 @@ def main() -> None:
             if (isinstance(i, TiledObjectGroup)):
                 i: TiledObjectGroup
                 file.write(f"{i.name}\n")
-                file.write(f"{len(i)} {i.properties['group-id']}\n")
+                file.write(f"{len(i)} {i.properties['mId']}\n")
                 for tile in i:
                     tile: TiledObject
                     line = f"{tile.x:.2f} {tile.y:.2f} {tile.width:.2f} {tile.height:.2f} "
-                    line += tile.properties.get("mId", "-1")
+                    line += str(tile.properties.get("mId", -1))
                     line = line.strip() + " "
                     line += tile.properties.get("source", "").replace("../tilesets/../../", "")
                     file.write(f"{line.strip()}\n")

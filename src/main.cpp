@@ -1,7 +1,11 @@
+#include <cassert>
 #include <raylib.h>
 #include "constants.hpp"
 #include "scene/Scene.hpp"
 #include "util/TexturePool.hpp"
+#include "ecs/components.hpp"
+#include "util/TypeManager.hpp"
+#include "util/FontPool.h"
 
 
 #if defined(PLATFORM_WEB)
@@ -20,7 +24,15 @@ void mainloop() {
 
 int main() {
     InitWindow(pk::SCREEN_W, pk::SCREEN_H, pk::WINDOW_TITLE);
-    
+
+    pk::gTypeManager.insert<pk::transform_t>();
+    pk::gTypeManager.insert<pk::sprite_t>();
+    pk::gTypeManager.insert<pk::sprite_animation_t>();
+    pk::gTypeManager.insert<pk::random_movement_t>();
+    pk::gTypeManager.insert<pk::character_t>();
+    assert(pk::gTypeManager.size() == pk::NUM_COMPONENTS);
+
+    pk::gFontPool.init();
     pk::gSceneManager.init();
     
     #if defined(PLATFORM_WEB)
@@ -33,7 +45,8 @@ int main() {
     }
 
     #endif
-    
+
+    pk::gFontPool.clear();
     pk::gTexturePool.clear();
     CloseWindow();
     return 0;

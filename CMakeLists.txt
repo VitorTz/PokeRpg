@@ -26,7 +26,13 @@ endif()
 
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
-add_executable (${PROJECT_NAME} ${sources} ${headers})
+add_executable (${PROJECT_NAME} ${sources} ${headers}
+        src/util/Direction.h
+        src/ecs/player.hpp
+        src/ecs/player.cpp
+        src/util/FontPool.h
+        src/util/FontId.h
+        src/util/FontPool.cpp)
 
         
 target_compile_options(${PROJECT_NAME} PRIVATE

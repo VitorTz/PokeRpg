@@ -29,6 +29,10 @@ void pk::SceneManager::changeScene(const pk::SceneId sceneId) {
 
 void pk::SceneManager::update(const float dt) {
     this->scene->update(dt);
+    if (this->shouldChangeScene == true) {
+        this->shouldChangeScene = false;
+        this->loadNextScene();
+    }
 }
 
 
